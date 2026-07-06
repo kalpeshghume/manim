@@ -1,0 +1,16 @@
+{
+  "name": "Manim Codespace",
+
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+
+  "postCreateCommand": "sudo apt update && sudo apt install -y ffmpeg pkg-config libcairo2-dev libpango1.0-dev texlive-latex-extra texlive-fonts-recommended texlive-science texlive-pictures dvisvgm && pip install manim",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}
