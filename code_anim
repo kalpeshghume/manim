@@ -1,0 +1,139 @@
+from manim import *
+from manim_voiceover import VoiceoverScene
+from manim_voiceover.services.gtts import GTTSService
+
+# Inherit from both MovingCameraScene and VoiceoverScene
+class PythonIfStatement(MovingCameraScene, VoiceoverScene):
+    def construct(self):
+        # Initialize the Text-to-Speech engine
+        self.set_speech_service(GTTSService(lang="en"))
+        self.camera.frame.save_state()
+
+        # ----------------------------------------------------
+        # 1. SETUP: Title & Code Snippet
+        # ----------------------------------------------------
+        title = Text("Python 'if' Statement Basics", font_size=36, color=BLUE).to_edge(UP)
+        
+        raw_code = """
+age = 20
+if age >= 18:
+    print("You can vote!")
+print("Done!")
+"""
+        code_block = Code(
+            code_string=raw_code.strip(),
+            tab_width=4,
+            background="rectangle", 
+            background_config={"fill_opacity": 0.9, "color": "#1E1E1E", "stroke_color": "#333333"},
+            language="Python",
+            formatter_style="monokai"
+        ).scale(0.85).to_edge(LEFT, buff=1)
+
+        # ----------------------------------------------------
+        # 2. SETUP: Flowchart Elements (Right Side)
+        # ----------------------------------------------------
+        diamond = Polygon(
+            [0, 0.8, 0], [1.5, 0, 0], [0, -0.8, 0], [-1.5, 0, 0],
+            color=GOLD, fill_opacity=0.2, fill_color=GOLD
+        )
+        diamond_text = Text("age >= 18 ?", font_size=20).move_to(diamond.get_center())
+        
+        true_box = Rectangle(width=2.5, height=0.8, color=GREEN, fill_opacity=0.2, fill_color=GREEN)
+        true_box.next_to(diamond, DOWN, buff=1.2)
+        true_text = Text('print("You can vote!")', font_size=16).move_to(true_box.get_center())
+
+        end_box = Rectangle(width=2.0, height=0.6, color=BLUE_E, fill_opacity=0.3, fill_color=BLUE_E)
+        end_box.next_to(true_box, DOWN, buff=1.2)
+        end_text = Text('print("Done!")', font_size=16).move_to(end_box.get_center())
+
+        arrow_true = Arrow(diamond.get_bottom(), true_box.get_top(), buff=0.1, color=GREEN)
+        label_true = Text("True", font_size=16, color=GREEN).next_to(arrow_true, LEFT, buff=0.2)
+
+        arrow_false = DashedLine(
+            diamond.get_right(), end_box.get_right(), path_arc=-1.2, color=RED
+        ).add_tip(tip_shape=ArrowTriangleFilledTip)
+        label_false = Text("False", font_size=16, color=RED).next_to(arrow_false.get_top(), RIGHT, buff=0.2)
+
+        arrow_to_end = Arrow(true_box.get_bottom(), end_box.get_top(), buff=0.1, color=WHITE)
+
+        # ----------------------------------------------------
+        # 3. SETUP: Execution Output Console (Bottom Left)
+        # ----------------------------------------------------
+        console_box = Rectangle(width=4.5, height=1.5, color=GRAY_D, fill_opacity=0.9, fill_color=BLACK)
+        console_box.next_to(code_block, DOWN, buff=0.5, aligned_edge=LEFT)
+        console_title = Text("Console Output", font_size=14, color=GRAY_B).next_to(console_box, UP, buff=0.1, aligned_edge=LEFT)
+        
+        output_line1 = Text("You can vote!", font_size=18, color=WHITE).move_to(console_box.get_center()).shift(UP * 0.2 + LEFT * 0.8)
+        output_line2 = Text("Done!", font_size=18, color=WHITE).next_to(output_line1, DOWN, aligned_edge=LEFT, buff=0.15)
+
+        # ----------------------------------------------------
+        # 4. ANIMATION & NARRATION SEQUENCE
+        # ----------------------------------------------------
+        
+        with self.voiceover(text="Let's look at how conditional execution works in Python using a simple script.") as tracker:
+            self.play(Write(title))
+            self.play(
+                self.camera.frame.animate.set_width(code_block.get_width() * 1.5).move_to(code_block.get_center()),
+                Create(code_block),
+                run_time=2.5
+            )
+
+        with self.voiceover(text="On the right side, we have a flowchart that maps directly to the logic of our code structure.") as tracker:
+            self.play(Restore(self.camera.frame), run_time=1.5)
+            self.play(Create(diamond), Write(diamond_text))
+            self.play(Create(arrow_true), Write(label_true), Create(true_box), Write(true_text))
+            self.play(Create(arrow_false), Write(label_false))
+            self.play(Create(arrow_to_end), Create(end_box), Write(end_text))
+
+        # Setup the yellow execution line tracker box
+        line_tracker = Rectangle(
+            width=code_block.background.get_width() - 0.2,
+            height=0.35,
+            color=YELLOW,
+            stroke_width=2,
+            fill_opacity=0.15,
+            fill_color=YELLOW
+        ).move_to(code_block.code_lines[0].get_center())
+
+        with self.voiceover(text="First, the program initializes a variable named age and sets its value to twenty.") as tracker:
+            self.play(Create(line_tracker))
+
+        # Focus zoom step
+        focus_point = VGroup(code_block.code_lines[1], diamond).get_center()
+        
+        with self.voiceover(text="Next, the python interpreter reaches the conditional expression. It evaluates if age is greater than or equal to eighteen.") as tracker:
+            self.play(
+                line_tracker.animate.move_to(code_block.code_lines[1].get_center()),
+                self.camera.frame.animate.set_width(10).move_to(focus_point),
+                run_time=1.2
+            )
+            self.play(diamond.animate.scale(1.1), Flash(diamond, color=GOLD), run_time=0.8)
+            self.play(diamond.animate.scale(1 / 1.1))
+
+        with self.voiceover(text="Since twenty is indeed greater than eighteen, the expression resolves to True, routing execution into the indented block.") as tracker:
+            self.play(
+                line_tracker.animate.move_to(code_block.code_lines[2].get_center()),
+                true_box.animate.set_stroke(color=YELLOW, width=4),
+                FadeIn(console_box),
+                FadeIn(console_title),
+                self.camera.frame.animate.move_to(VGroup(code_block.code_lines[2], console_box).get_center()),
+                run_time=1
+            )
+            self.play(Write(output_line1))
+
+        with self.voiceover(text="Finally, execution leaves the if-statement block and runs the final unindented line, printing Done to the terminal.") as tracker:
+            self.play(
+                line_tracker.animate.move_to(code_block.code_lines[3].get_center()),
+                true_box.animate.set_stroke(color=GREEN, width=2),
+                end_box.animate.set_stroke(color=YELLOW, width=4),
+            )
+            self.play(Write(output_line2))
+
+        with self.voiceover(text="And that is a complete run-through of basic conditional execution logic in Python.") as tracker:
+            self.play(
+                FadeOut(line_tracker), 
+                end_box.animate.set_stroke(color=BLUE_E, width=2),
+                Restore(self.camera.frame),
+                run_time=2
+            )
+        self.wait(2)
