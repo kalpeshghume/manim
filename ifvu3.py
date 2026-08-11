@@ -534,13 +534,20 @@ class IfStatementsScene(VoiceoverScene):
         self.play(FadeIn(desc), run_time=0.4)
         self.track(desc)
 
+        # ---- Show caption at top BEFORE flowchart ----
+        caption = self.build_caption("speed = 82  ->  condition True  ->  warning printed")
+        caption.next_to(desc, DOWN, buff=0.15)
+        self.play(FadeIn(caption), run_time=0.4)
+        self.track(caption)
+
+        # ---- Build flowchart step by step ----
         flowchart_data = self.build_if_flowchart()
         group = flowchart_data["group"]
         nodes = flowchart_data["nodes"]
         arrows = flowchart_data["arrows"]
 
-        group.next_to(desc, DOWN, buff=0.35)
-        self.remove(group)
+        group.next_to(caption, DOWN, buff=0.2)
+        self.remove(group)  # we'll add stepwise
 
         steps = [
             {
@@ -597,20 +604,18 @@ class IfStatementsScene(VoiceoverScene):
             self.play(FadeIn(no_arrow, scale=0.9), run_time=0.3)
             self.play(no_arrow.animate.set_opacity(0.3), run_time=0.3)
 
-        caption = self.build_caption("speed = 82  ->  condition True  ->  warning printed")
-        caption.next_to(group, DOWN, buff=0.3)
-        self.play(FadeIn(caption), run_time=0.4)
+        # We keep the caption and group; they will be faded together later
         self.track(group)
-        self.track(caption)
 
         self.wait(0.5)
+        # Now fade out flowchart and caption before code
         self.play(FadeOut(group), FadeOut(caption), run_time=0.5)
         if group in self.section_mobjects:
             self.section_mobjects.remove(group)
         if caption in self.section_mobjects:
             self.section_mobjects.remove(caption)
 
-        # Code part with per-line voiceover
+        # ---- Code part with per-line voiceover ----
         code = [
             (0, "speed = 82"),
             (0, "if speed > 80:"),
@@ -618,7 +623,6 @@ class IfStatementsScene(VoiceoverScene):
             (0, 'print("Speed check complete.")'),
         ]
         outputs = [None, None, "Warning: over the limit!", "Speed check complete."]
-        # line_voice_texts for each line (exec_order)
         line_voice_texts = [
             "We set speed to 82.",
             "The if statement checks if speed is greater than 80.",
@@ -639,12 +643,19 @@ class IfStatementsScene(VoiceoverScene):
         self.play(FadeIn(desc), run_time=0.4)
         self.track(desc)
 
+        # ---- Show caption at top BEFORE flowchart ----
+        caption = self.build_caption("age = 15  ->  condition False  ->  else branch runs")
+        caption.next_to(desc, DOWN, buff=0.15)
+        self.play(FadeIn(caption), run_time=0.4)
+        self.track(caption)
+
+        # ---- Build flowchart ----
         flowchart_data = self.build_ifelse_flowchart()
         group = flowchart_data["group"]
         nodes = flowchart_data["nodes"]
         arrows = flowchart_data["arrows"]
 
-        group.next_to(desc, DOWN, buff=0.35)
+        group.next_to(caption, DOWN, buff=0.2)
         self.remove(group)
 
         steps = [
@@ -706,12 +717,7 @@ class IfStatementsScene(VoiceoverScene):
             self.play(FadeIn(yes_end, scale=0.9), run_time=0.2)
             self.play(yes_end.animate.set_opacity(0.3), run_time=0.2)
 
-        caption = self.build_caption("age = 15  ->  condition False  ->  else branch runs")
-        caption.next_to(group, DOWN, buff=0.3)
-        self.play(FadeIn(caption), run_time=0.4)
         self.track(group)
-        self.track(caption)
-
         self.wait(0.5)
         self.play(FadeOut(group), FadeOut(caption), run_time=0.5)
         if group in self.section_mobjects:
@@ -748,12 +754,19 @@ class IfStatementsScene(VoiceoverScene):
         self.play(FadeIn(desc), run_time=0.4)
         self.track(desc)
 
+        # ---- Show caption at top BEFORE flowchart ----
+        caption = self.build_caption("temp = 3  ->  both conditions False  ->  else runs (Cold)")
+        caption.next_to(desc, DOWN, buff=0.15)
+        self.play(FadeIn(caption), run_time=0.4)
+        self.track(caption)
+
+        # ---- Build flowchart ----
         flowchart_data = self.build_elif_flowchart()
         group = flowchart_data["group"]
         nodes = flowchart_data["nodes"]
         arrows = flowchart_data["arrows"]
 
-        group.next_to(desc, DOWN, buff=0.3)
+        group.next_to(caption, DOWN, buff=0.2)
         self.remove(group)
 
         steps = [
@@ -819,12 +832,7 @@ class IfStatementsScene(VoiceoverScene):
                 self.play(FadeIn(obj, scale=0.9), run_time=0.1)
                 self.play(obj.animate.set_opacity(0.3), run_time=0.1)
 
-        caption = self.build_caption("temp = 3  ->  both conditions False  ->  else runs (Cold)")
-        caption.next_to(group, DOWN, buff=0.25)
-        self.play(FadeIn(caption), run_time=0.4)
         self.track(group)
-        self.track(caption)
-
         self.wait(0.5)
         self.play(FadeOut(group), FadeOut(caption), run_time=0.5)
         if group in self.section_mobjects:
@@ -865,12 +873,19 @@ class IfStatementsScene(VoiceoverScene):
         self.play(FadeIn(desc), run_time=0.4)
         self.track(desc)
 
+        # ---- Show caption at top BEFORE flowchart ----
+        caption = self.build_caption("member=True, weight=4  ->  inner True  ->  Free shipping")
+        caption.next_to(desc, DOWN, buff=0.15)
+        self.play(FadeIn(caption), run_time=0.4)
+        self.track(caption)
+
+        # ---- Build flowchart ----
         flowchart_data = self.build_nested_flowchart()
         group = flowchart_data["group"]
         nodes = flowchart_data["nodes"]
         arrows = flowchart_data["arrows"]
 
-        group.next_to(desc, DOWN, buff=0.3)
+        group.next_to(caption, DOWN, buff=0.2)
         self.remove(group)
 
         steps = [
@@ -936,12 +951,7 @@ class IfStatementsScene(VoiceoverScene):
                 self.play(FadeIn(obj, scale=0.9), run_time=0.1)
                 self.play(obj.animate.set_opacity(0.3), run_time=0.1)
 
-        caption = self.build_caption("member=True, weight=4  ->  inner True  ->  Free shipping")
-        caption.next_to(group, DOWN, buff=0.25)
-        self.play(FadeIn(caption), run_time=0.4)
         self.track(group)
-        self.track(caption)
-
         self.wait(0.5)
         self.play(FadeOut(group), FadeOut(caption), run_time=0.5)
         if group in self.section_mobjects:
@@ -1024,9 +1034,6 @@ class IfStatementsScene(VoiceoverScene):
                 self.highlight_line(line_idx)
                 if outputs[line_idx] is not None:
                     self.print_output(outputs[line_idx])
-                # The run_time of the animation is controlled by tracker.duration
-                # We'll add a small extra wait to let the highlight be visible
-                # but it's already handled by the voiceover block
 
         # Dim skipped lines
         skip_mobs = [self.code_lines[i] for i in skip] + [self.code_numbers[i] for i in skip]
